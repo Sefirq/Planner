@@ -11,4 +11,7 @@ class HomeController {
     String index() {
         return "index";
     }
+
+    @RequestMapping("/addMeeting.html")
+    String addMeeting(){ return "addMeeting";}
 }
