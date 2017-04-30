@@ -3,15 +3,19 @@ package com.sefir.app;
 import java.util.Date;
 
 public class Meeting {
-    private String name;
+    public String name;
 
     private String description;
 
     private int duration;
 
-    private Date date;
+    private String date;
 
-    public Meeting(String name, String description, int duration, Date date) {
+    Meeting(){
+
+    }
+
+    public Meeting(String name, String description, int duration, String date) {
         this.name = name;
         this.description = description;
         this.duration = duration;
@@ -42,11 +46,11 @@ public class Meeting {
         return name;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 }
