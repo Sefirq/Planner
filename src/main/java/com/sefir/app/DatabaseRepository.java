@@ -22,6 +22,11 @@ public class DatabaseRepository {
         return jdbcTemplate.query("SELECT * FROM meetings", new MeetingRowMapper());
     }
 
+    @Transactional(readOnly = true)
+    public List<Meeting> findAllWithMeetingRoomID(int meetingRoomID) {
+        return jdbcTemplate.query("SELECT * FROM meetings WHERE meetingRoomID=" + Integer.toString(meetingRoomID), new MeetingRowMapper());
+    }
+
     public Meeting create(final Meeting meeting) {
         final String sqlInsertMeeting = "INSERT INTO meetings VALUES(default, ?, ?, ?, ?, ?, ?)";
 
@@ -38,7 +43,6 @@ public class DatabaseRepository {
         }, holder);
 
         int newUserID = holder.getKey().intValue();
-        System.out.println("lol: " + Integer.toString(newUserID));
         meeting.setId(newUserID);
         return meeting;
     }
@@ -55,7 +59,6 @@ class MeetingRowMapper implements RowMapper<Meeting> {
         meeting.setDate(rs.getString("date"));
         meeting.setTime(rs.getString("time"));
         meeting.setMeetingRoomID(rs.getInt("meetingRoomID"));
-        System.out.println("MEETING FOUND " + meeting.getName());
         return meeting;
     }
 }

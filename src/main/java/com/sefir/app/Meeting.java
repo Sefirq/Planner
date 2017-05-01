@@ -95,4 +95,8 @@ public class Meeting {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String toString() {
+        return "Meeting: " + this.id + this.name + ", " + this.description + ", " + this.duration + ", " + this.date + ", " + this.time + ", " + this.meetingRoomID;
+    }
 }
