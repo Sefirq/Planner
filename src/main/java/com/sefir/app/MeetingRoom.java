@@ -3,19 +3,19 @@ package com.sefir.app;
 import java.util.*;
 
 public class MeetingRoom {
-    private String roomIdentificator;
+    private int roomIdentificator;
     private Set<Meeting> meetingsInRoom;
 
-    public MeetingRoom(String roomIdentificator) {
+    public MeetingRoom(int roomIdentificator) {
         this.roomIdentificator = roomIdentificator;
         this.meetingsInRoom = new HashSet<>();
     }
 
-    public void setRoomIdentificator(String newRoomIdentificator) {
+    public void setRoomIdentificator(int newRoomIdentificator) {
         this.roomIdentificator = newRoomIdentificator;
     }
 
-    public String getRoomIdentificator() {
+    public int getRoomIdentificator() {
         return this.roomIdentificator;
     }
 
