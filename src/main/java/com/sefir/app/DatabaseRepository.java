@@ -49,6 +49,15 @@ public class DatabaseRepository {
         meeting.setId(newUserID);
         return meeting;
     }
+
+    public void deleteByID(int meetingID) {
+        final String sqlDeleteMeeting = "DELETE FROM meetings WHERE id = ?";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlDeleteMeeting);
+            preparedStatement.setInt(1, meetingID);
+            return preparedStatement;
+        });
+    }
 }
 
 /**

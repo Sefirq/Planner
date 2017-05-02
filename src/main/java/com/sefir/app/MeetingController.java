@@ -4,11 +4,15 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 import java.sql.Time;
@@ -160,6 +164,19 @@ public class MeetingController {
             model.addAttribute("message", "Succesfully added a meeting");
         }
         return "addMeeting";
+    }
+
+    @GetMapping("/deleteMeeting/{meetingID}")
+    ModelAndView deleteMeeting(@PathVariable("meetingID") int meetingID) {
+        System.out.println(meetingID);
+        databaseRepository.deleteByID(meetingID);
+        ModelMap model = new ModelMap();
+        model.addAttribute("state", 1);
+        model.addAttribute("message", "Succesfully deleted a meeting");
+        return new ModelAndView(
+                new RedirectView("/viewMeetings", true),
+                model
+                        );
     }
 
     @GetMapping("/viewMeetings")

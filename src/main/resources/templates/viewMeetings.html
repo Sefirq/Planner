@@ -10,6 +10,15 @@
 <p>
     <a id="meetings-creator" class="btn btn-default" href="/addMeeting">Create meeting</a>
 </p>
+<!--/*@thymesVar id="message" type="java.lang.String"*/-->
+<!--/*--><!--@thymesVar id="state" type="java.lang.Integer"--><!--*/-->
+<div th:if="${param.message != null}" class="row"> <!-- if there is a message in model -->
+    <div class="col-sm-2 col-sm-offset-2">
+        <div class="alert text-center" th:classappend="${param.state[0]} == 1 ? 'alert-success' : 'alert-danger'" >
+            <span id="msg" th:text="${param.message[0]}"></span>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-sm-6">
         <div class="panel panel-primary">
@@ -39,6 +48,11 @@
                         <td th:text="${meeting.date}"></td>
                         <td th:text="${meeting.time}"></td>
                         <td th:text="${meeting.meetingRoomID}"></td>
+                        <td>
+                            <p>
+                                <a class="btn btn-default deleter" th:href="@{/deleteMeeting/{id}(id=${meeting.id})}">Delete</a>
+                            </p>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
