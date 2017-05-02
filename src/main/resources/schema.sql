@@ -1,8 +1,3 @@
- CREATE TABLE meetingRooms
-(
-  id int(10) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (id)
-);
 CREATE TABLE meetings
  (
    id int(10) NOT NULL AUTO_INCREMENT,

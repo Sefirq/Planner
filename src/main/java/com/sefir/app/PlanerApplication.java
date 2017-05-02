@@ -12,6 +12,4 @@ public class PlanerApplication {
 		SpringApplication.run(PlanerApplication.class, args);
 	}
 
-	@Autowired
-	JdbcTemplate jdbcTemplate;
 }

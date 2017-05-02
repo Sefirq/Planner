@@ -8,15 +8,9 @@ import org.springframework.ui.Model;
 @Controller
 class HomeController {
 
-    @RequestMapping("/index")
+    @RequestMapping("/")
     String index() {
         return "index";
     }
 
-//    @GetMapping("/addMeeting.html")
-//    String addMeeting(Model model) {
-//        model.addAttribute("meeting", new Meeting());
-//        System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-//        return "addMeeting";
-//    }
 }

@@ -38,7 +38,7 @@ public class Meeting {
         this.meetingRoomID = meetingRoomID;
     }
 
-    public void setDescription(String description) {
+    void setDescription(String description) {
         this.description = description;
     }
 
@@ -46,7 +46,7 @@ public class Meeting {
         return description;
     }
 
-    public void setDuration(int duration) {
+    void setDuration(int duration) {
         if(duration > 15 && duration < 120)
             this.duration = duration;
 
@@ -56,7 +56,7 @@ public class Meeting {
         return duration;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -64,7 +64,7 @@ public class Meeting {
         return name;
     }
 
-    public void setDate(String date) {
+    void setDate(String date) {
             this.date = date;
     }
 
@@ -76,7 +76,7 @@ public class Meeting {
         return time;
     }
 
-    public void setTime(String time) {
+    void setTime(String time) {
             this.time = time;
     }
 
@@ -84,7 +84,7 @@ public class Meeting {
         return meetingRoomID;
     }
 
-    public void setMeetingRoomID(int meetingRoomID) {
+    void setMeetingRoomID(int meetingRoomID) {
         this.meetingRoomID = meetingRoomID;
     }
 
@@ -92,7 +92,7 @@ public class Meeting {
         return id;
     }
 
-    public void setId(int id) {
+    void setId(int id) {
         this.id = id;
     }
 
