@@ -33,7 +33,7 @@ public class MeetingController {
         return new Meeting();
     }
 
-    public Date parseDateAndTime(Meeting meeting) {
+    private Date parseDateAndTime(Meeting meeting) {
         String customDate = meeting.getDate() + " " + meeting.getTime();
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date tempDate = new Date();
@@ -45,7 +45,7 @@ public class MeetingController {
         return tempDate;
     }
 
-    public Interval createIntervalFromMeeting(Meeting meeting) {
+    private Interval createIntervalFromMeeting(Meeting meeting) {
         DateTime timeOfBeginning = new DateTime(this.parseDateAndTime(meeting));
         DateTime timeOfEnding = new DateTime(timeOfBeginning.plusMinutes(meeting.getDuration()));
         return new Interval(timeOfBeginning, timeOfEnding);
@@ -69,7 +69,7 @@ public class MeetingController {
      * @param meetings - all meetings which are to be held in the same meetings room as the new one.
      * @return String - message with proposition of new date and time of this meeting, which won't collide with any other.
      */
-    public String proposeNewDate(Meeting meeting, List<Meeting> meetings) {
+    String proposeNewDate(Meeting meeting, List<Meeting> meetings) {
         boolean i = true;
         while(i) {
             Interval interval = createIntervalFromMeeting(meeting);
@@ -117,11 +117,13 @@ public class MeetingController {
 
     @PostMapping(value = {"/addMeeting"})
     public String createMeeting(Model model, @Valid Meeting meeting, BindingResult bindingResult) {
+        System.out.println(meeting.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("state", 0);
             model.addAttribute("message", "The meeting was not added due to an error.");
             return "addMeeting";
-        } else if (meeting.getName().equals("")) {
+        }
+        else if (meeting.getName().equals("")) {
             model.addAttribute("state", 0);
             model.addAttribute("message", "The meeting was not added, name is obligatory.");
         } else if (meeting.getDuration() < 10 || meeting.getDuration() > 120) {
@@ -161,14 +163,13 @@ public class MeetingController {
             }
             databaseRepository.create(meeting);
             model.addAttribute("state", 1);
-            model.addAttribute("message", "Succesfully added a meeting");
+            model.addAttribute("message", "Successfully added a meeting");
         }
         return "addMeeting";
     }
 
     @GetMapping("/deleteMeeting/{meetingID}")
     ModelAndView deleteMeeting(@PathVariable("meetingID") int meetingID) {
-        System.out.println(meetingID);
         databaseRepository.deleteByID(meetingID);
         ModelMap model = new ModelMap();
         model.addAttribute("state", 1);

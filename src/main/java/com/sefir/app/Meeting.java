@@ -1,14 +1,5 @@
 package com.sefir.app;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Meeting {
 
@@ -29,7 +20,6 @@ public class Meeting {
     Meeting(){}
 
     public Meeting(String name, String description, int duration, String date, String time, int meetingRoomID) {
-        System.out.println("lol");
         this.name = name;
         this.description = description;
         this.duration = duration;
@@ -38,7 +28,7 @@ public class Meeting {
         this.meetingRoomID = meetingRoomID;
     }
 
-    void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -46,7 +36,7 @@ public class Meeting {
         return description;
     }
 
-    void setDuration(int duration) {
+    public void setDuration(int duration) {
         if(duration > 15 && duration < 120)
             this.duration = duration;
 
@@ -56,7 +46,7 @@ public class Meeting {
         return duration;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -64,7 +54,7 @@ public class Meeting {
         return name;
     }
 
-    void setDate(String date) {
+    public void setDate(String date) {
             this.date = date;
     }
 
@@ -76,7 +66,7 @@ public class Meeting {
         return time;
     }
 
-    void setTime(String time) {
+    public void setTime(String time) {
             this.time = time;
     }
 
@@ -84,7 +74,7 @@ public class Meeting {
         return meetingRoomID;
     }
 
-    void setMeetingRoomID(int meetingRoomID) {
+    public void setMeetingRoomID(int meetingRoomID) {
         this.meetingRoomID = meetingRoomID;
     }
 
@@ -92,7 +82,7 @@ public class Meeting {
         return id;
     }
 
-    void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
