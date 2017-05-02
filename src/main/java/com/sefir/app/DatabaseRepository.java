@@ -2,7 +2,6 @@ package com.sefir.app;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -27,6 +26,10 @@ public class DatabaseRepository {
         return jdbcTemplate.query("SELECT * FROM meetings WHERE meetingRoomID=" + Integer.toString(meetingRoomID), new MeetingRowMapper());
     }
 
+    /**
+     * @param meeting - meeting object to be inserted into database
+     * @return meeting - same object but with automatically generated (H2 database generates it) new meeting's ID
+     */
     public Meeting create(final Meeting meeting) {
         final String sqlInsertMeeting = "INSERT INTO meetings VALUES(default, ?, ?, ?, ?, ?, ?)";
 
@@ -48,6 +51,9 @@ public class DatabaseRepository {
     }
 }
 
+/**
+ * This class maps JDBC's ResultSet to proper Meeting objects. One row creates one object with all the fields filled.
+ */
 class MeetingRowMapper implements RowMapper<Meeting> {
     @Override
     public Meeting mapRow(ResultSet rs, int rowNum) throws SQLException {

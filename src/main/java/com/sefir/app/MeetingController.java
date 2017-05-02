@@ -4,11 +4,9 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.validation.BindingResult;
 
@@ -16,7 +14,6 @@ import javax.validation.Valid;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -43,21 +40,17 @@ public class MeetingController {
         }
         return tempDate;
     }
-    public boolean checkIfMeetingRoomIsFree(Meeting meeting) {
-        Date tempDate = this.parseDateAndTime(meeting);
-        List<Meeting> meetings = databaseRepository.findAllWithMeetingRoomID(meeting.getMeetingRoomID());
-        boolean isCollision = checkForCollisionBetweenMeetings(meeting, meetings, tempDate);
-        return isCollision;
+
+    public Interval createIntervalFromMeeting(Meeting meeting) {
+        DateTime timeOfBeginning = new DateTime(this.parseDateAndTime(meeting));
+        DateTime timeOfEnding = new DateTime(timeOfBeginning.plusMinutes(meeting.getDuration()));
+        return new Interval(timeOfBeginning, timeOfEnding);
     }
 
-    private boolean checkForCollisionBetweenMeetings(Meeting meeting, List<Meeting> meetings, Date tempDate) {
-        DateTime timeOfBeginning = new DateTime(tempDate);
-        DateTime timeOfEnding = timeOfBeginning.plusMinutes(meeting.getDuration());
-        Interval interval = new Interval(timeOfBeginning, timeOfEnding);
+    private boolean checkIfMeetingRoomIsFree(Meeting meeting, List<Meeting> meetings) {
+        Interval interval = createIntervalFromMeeting(meeting);
         for (Meeting probablyCollidingMeeting : meetings) {
-            DateTime secondTimeOfBeginning = new DateTime(parseDateAndTime(probablyCollidingMeeting));
-            DateTime secondTimeOfEnding = secondTimeOfBeginning.plusMinutes(probablyCollidingMeeting.getDuration());
-            Interval secondInterval = new Interval(secondTimeOfBeginning, secondTimeOfEnding);
+            Interval secondInterval = createIntervalFromMeeting(probablyCollidingMeeting);
             if (interval.overlaps(secondInterval)) {
                 return false;
             }
@@ -65,8 +58,51 @@ public class MeetingController {
         return true;
     }
 
-    public void proposeNewDate(Meeting meeting) {
-        //TODO
+    /**
+     * This method proposes a new date of meeting if the room was not available while creating a new meeting with specific date.
+     * It iterates over all meetings and tries to find date and time, when the room will be available.
+     * @param meeting - meeting, acquired from .html form.
+     * @param meetings - all meetings which are to be held in the same meetings room as the new one.
+     * @return String - message with proposition of new date and time of this meeting, which won't collide with any other.
+     */
+    public String proposeNewDate(Meeting meeting, List<Meeting> meetings) {
+        boolean i = true;
+        while(i) {
+            Interval interval = createIntervalFromMeeting(meeting);
+            for (Meeting probablyCollidingMeeting : meetings) {
+                Interval secondInterval = createIntervalFromMeeting(probablyCollidingMeeting);
+                if (interval.overlaps(secondInterval)) {
+                    DateTime overlappingEnd = secondInterval.getEnd();
+                    String newDate = parseStringDateFromDateTime(overlappingEnd);
+                    String newTime = parseStringTimeFromDateTime(overlappingEnd);
+                    System.out.println(newDate + " " + newTime);
+                    meeting.setDate(newDate);
+                    meeting.setTime(newTime);
+                    i=true;
+                    break;
+                }
+                else {
+                    i=false;
+                }
+            }
+        }
+        return "This meeting is overlapping with other one in this room. The room is free on " + meeting.getDate() + " at " + meeting.getTime();
+    }
+
+    /**
+     * @param overlappingEnd - Date and time of overlapping meeting's interval's end (when the room will be free after this meeting)
+     * @return String - time in format HH:mm
+     */
+    private String parseStringTimeFromDateTime(DateTime overlappingEnd) {
+        return overlappingEnd.getHourOfDay() + ":" + overlappingEnd.getMinuteOfHour();
+    }
+
+    /**
+     * @param overlappingEnd - same as above
+     * @return String - date in format yyyy-MM-dd
+     */
+    private String parseStringDateFromDateTime(DateTime overlappingEnd) {
+        return overlappingEnd.getYear() + "-" + overlappingEnd.getMonthOfYear() + "-" + overlappingEnd.getDayOfMonth();
     }
 
     @GetMapping("/addMeeting")
@@ -81,6 +117,9 @@ public class MeetingController {
             model.addAttribute("state", 0);
             model.addAttribute("message", "The meeting was not added due to an error.");
             return "addMeeting";
+        } else if (meeting.getName().equals("")) {
+            model.addAttribute("state", 0);
+            model.addAttribute("message", "The meeting was not added, name is obligatory.");
         } else if (meeting.getDuration() < 10 || meeting.getDuration() > 120) {
             model.addAttribute("state", 0);
             model.addAttribute("message", "The meeting was not added, duration was not between 15 minutes and 120 minutes.");
@@ -107,12 +146,13 @@ public class MeetingController {
                 return "addMeeting";
             }
             // check if the meeting room is free
-            boolean isMeetingRoomFree = this.checkIfMeetingRoomIsFree(meeting);
+            List<Meeting> meetings = databaseRepository.findAllWithMeetingRoomID(meeting.getMeetingRoomID());
+            boolean isMeetingRoomFree = this.checkIfMeetingRoomIsFree(meeting, meetings);
             // propose other hour
             if(!isMeetingRoomFree) {
-                this.proposeNewDate(meeting);
+                String messageWithProposition = this.proposeNewDate(meeting, meetings);
                 model.addAttribute("state", 0);
-                model.addAttribute("message", "This meeting is overlapping with other one");
+                model.addAttribute("message", messageWithProposition);
                 return "addMeeting";
             }
             databaseRepository.create(meeting);
