@@ -1,4 +1,4 @@
-# Planer
+# Planner
 Planning web application made in Spring Boot.
 
 # You must have:
