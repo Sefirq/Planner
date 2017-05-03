@@ -79,7 +79,6 @@ public class MeetingController {
                     DateTime overlappingEnd = secondInterval.getEnd();
                     String newDate = parseStringDateFromDateTime(overlappingEnd);
                     String newTime = parseStringTimeFromDateTime(overlappingEnd);
-                    System.out.println(newDate + " " + newTime);
                     meeting.setDate(newDate);
                     meeting.setTime(newTime);
                     i=true;
@@ -117,7 +116,6 @@ public class MeetingController {
 
     @PostMapping(value = {"/addMeeting"})
     public String createMeeting(Model model, @Valid Meeting meeting, BindingResult bindingResult) {
-        System.out.println(meeting.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("state", 0);
             model.addAttribute("message", "The meeting was not added due to an error.");
