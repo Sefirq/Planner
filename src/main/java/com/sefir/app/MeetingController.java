@@ -151,6 +151,12 @@ public class MeetingController {
                 model.addAttribute("message", "The meeting was not added, time was wrong");
                 return "addMeeting";
             }
+            DateTime dateTime = new DateTime(parseDateAndTime(meeting));
+            if (!dateTime.isAfterNow()) {
+                model.addAttribute("state", 0);
+                model.addAttribute("message", "The meeting was not added, time of beginning is before now");
+                return "addMeeting";
+            }
             // check if the meeting room is free
             List<Meeting> meetings = databaseRepository.findAllWithMeetingRoomID(meeting.getMeetingRoomID());
             boolean isMeetingRoomFree = this.checkIfMeetingRoomIsFree(meeting, meetings);
